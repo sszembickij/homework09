@@ -11,11 +11,10 @@ c) метод в который передается матрица и числ�
 public class HomeWork0901 {
     public static void main(String[] args) {
 
-        Random random = new Random();
         int[][] matrix = new int[4][4];
         int multiplier = 10;
 
-        setMatrixRandom(random, matrix);
+        setMatrixRandom(matrix);
         printMatrix(matrix);
         multiplicationMatrixNumber(matrix, multiplier);
         printMatrix(matrix);
@@ -23,15 +22,16 @@ public class HomeWork0901 {
 
     }
 
-    private static void setMatrixRandom(Random random, int[][] matrix) {
+    public static void setMatrixRandom(int[][] matrix) {
+        Random random = new Random();
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                matrix[i][j] = random.nextInt(100);
+                matrix[i][j] = random.nextInt(10);
             }
         }
     }
 
-    private static void printMatrix(int[][] matrix) {
+    public static void printMatrix(int[][] matrix) {
         for (int[] line : matrix) {
             System.out.println(Arrays.toString(line));
         }
