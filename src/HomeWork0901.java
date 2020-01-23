@@ -18,8 +18,6 @@ public class HomeWork0901 {
         printMatrix(matrix);
         multiplicationMatrixNumber(matrix, multiplier);
         printMatrix(matrix);
-
-
     }
 
     public static void setMatrixRandom(int[][] matrix) {
