@@ -28,7 +28,7 @@ public class TextDigital {
         }
 
 
-        while (result.length() - resultAddMantis - 1 < 10 || result.toString().equals("0")) {
+        while (result.length() - resultAddMantis - 1 < 1000 || result.toString().equals("0")) {
             resultChar = 0;
             while (firstOperandMore(number1, number2)) {
                 number1 = new StringBuilder(subtractionTextDidital(number1.toString(), number2.toString()));
