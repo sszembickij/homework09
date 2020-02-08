@@ -1,68 +1,44 @@
-/*написать класс для работы с большми числами которые заданны в виде строк,
-и могут иметь длину в 1000 символов, без использования стандотных
-библиотечных классов типа BigDecimal.
-a) реализовать операции +,-
-*/
-
-public class TextDidital {
+public class TextDigital {
     public static void main(String[] args) {
 
-        String number1 = "800.00005";
-        String number2 = "800";
+        String number1 = "6510715279465198716163165161684651465161654.654168461651699847985126710761527";
+        String number2 = "654168461651699847985126710761527.6510715279465198716163165161684651465161654";
+//        String number1 = "10.01";
+//        String number2 = "0.1";
         //System.out.println(additionTextDidital(number1, number2));
-        System.out.println(subtractionTextDidital(number1, number2));
+        //System.out.println(subtractionTextDidital(number1, number2));
         //System.out.println(multiplicationTextDidital(number1, number2));
-        //System.out.println(divisionTextDidital(number1, number2));
+        System.out.println(divisionTextDidital(number1, number2));
+        //System.out.println(changeMantis(new StringBuilder(number1), 1));
+        //pruningZero(new StringBuilder("00"));
 
     }
 
     public static String divisionTextDidital(String operand1, String operand2) {
         int resultAddMantis = 0;
-        StringBuilder number1 = new StringBuilder(operand1);
-        if (number1.indexOf(".") == -1) {
-            number1.append(".");
-        }
-        StringBuilder number2 = new StringBuilder(operand2);
-        if (number2.indexOf(".") == -1) {
-            number2.append(".");
-        }
+        int resultChar = 0;
         int tmp = 0;
-
-        int fractPart1 = getLengthFractionalParts(number1.toString());
-        int fractPart2 = getLengthFractionalParts(number2.toString());
-        int mantis = Math.max(fractPart1, fractPart2);
-        number1 = new StringBuilder(operand1.replace(".", ""));
-        number2 = new StringBuilder(operand2.replace(".", ""));
-        StringBuilder result = new StringBuilder("0");
-
-        if (fractPart1 <= fractPart2) {
-            for (int i = 0; i < fractPart2 - fractPart1; i++) {
-                number1.append("0");
-            }
-        } else {
-            for (int i = 0; i < fractPart1 - fractPart2; i++) {
-                number2.append("0");
-            }
-        }
-        while (number1.length() != number2.length()) {
-            if (number1.length() < number2.length()) {
-                number1.insert(0, '0');
-            } else {
-                number2.insert(0, '0');
-            }
-        }
+        StringBuilder result = new StringBuilder();
+        StringBuilder number1 = new StringBuilder(operand1);
+        StringBuilder number2 = new StringBuilder(operand2);
 
         while (firstOperandMore(number1, number2)) {
             resultAddMantis++;
             number1 = new StringBuilder(changeMantis(number1, -1));
-            System.out.println(number1);
         }
 
 
-        while (result.length() < 1000) {
-
+        while (result.length() - resultAddMantis - 1 < 10 || result.toString().equals("0")) {
+            resultChar = 0;
+            while (firstOperandMore(number1, number2)) {
+                number1 = new StringBuilder(subtractionTextDidital(number1.toString(), number2.toString()));
+                resultChar++;
+            }
+            result.append(resultChar);
+            number1 = new StringBuilder(changeMantis(number1, 1));
         }
-
+        result.insert(resultAddMantis + 1, '.');
+        pruningZero(result);
         return result.toString();
     }
 
@@ -72,7 +48,7 @@ public class TextDidital {
                 value.deleteCharAt(value.length() - 1);
             }
         }
-        while (value.charAt(0) == '0' && value.charAt(1) != '.') {
+        while (!value.toString().equals("0") && value.charAt(0) == '0' && value.charAt(1) != '.') {
             value.deleteCharAt(0);
         }
         if (value.charAt(value.length() - 1) == '.') {
@@ -82,10 +58,10 @@ public class TextDidital {
 
     public static String multiplicationTextDidital(String operand1, String operand2) {
         StringBuilder number1 = new StringBuilder(operand1);
+        StringBuilder number2 = new StringBuilder(operand2);
         if (number1.indexOf(".") == -1) {
             number1.append(".");
         }
-        StringBuilder number2 = new StringBuilder(operand2);
         if (number2.indexOf(".") == -1) {
             number2.append(".");
         }
@@ -107,6 +83,7 @@ public class TextDidital {
                 result = new StringBuilder(additionTextDidital(temp2.toString(), temp1.toString()));
             }
         }
+        pruningZero(result);
         return result.toString();
     }
 
@@ -203,26 +180,56 @@ public class TextDidital {
             }
         }
 
-        if (result.charAt(result.length() - 1) == '0') {
-            result = result.deleteCharAt(result.length() - 1);
+        if (mantis > 0) {
+            result.insert(result.length() - mantis, '.');
         }
         if (isNegativResult) {
             result.insert(0, '-');
         }
-        if (mantis > 0) {
-            result.insert(result.length() - mantis, '.');
-        }
         pruningZero(result);
-
         return result.toString();
     }
 
     private static boolean firstOperandMore(StringBuilder value1, StringBuilder value2) {
-        for (int i = 0; i < value1.length(); i++) {
-            if (value1.charAt(i) > value2.charAt(i)) {
+
+        StringBuilder number1 = new StringBuilder(value1);
+        if (number1.indexOf(".") == -1) {
+            number1.append(".");
+        }
+        StringBuilder number2 = new StringBuilder(value2);
+        if (number2.indexOf(".") == -1) {
+            number2.append(".");
+        }
+
+        int fractPart1 = getLengthFractionalParts(number1.toString());
+        int fractPart2 = getLengthFractionalParts(number2.toString());
+        int mantis = Math.max(fractPart1, fractPart2);
+        number1 = new StringBuilder(value1.toString().replace(".", ""));
+        number2 = new StringBuilder(value2.toString().replace(".", ""));
+
+        if (fractPart1 <= fractPart2) {
+            for (int i = 0; i < fractPart2 - fractPart1; i++) {
+                number1.append("0");
+            }
+        } else {
+            for (int i = 0; i < fractPart1 - fractPart2; i++) {
+                number2.append("0");
+            }
+        }
+        while (number1.length() != number2.length()) {
+            if (number1.length() < number2.length()) {
+                number1.insert(0, '0');
+            } else {
+                number2.insert(0, '0');
+            }
+        }
+
+
+        for (int i = 0; i < number1.length(); i++) {
+            if (number1.charAt(i) > number2.charAt(i)) {
                 return true;
             }
-            if (value1.charAt(i) < value2.charAt(i)) {
+            if (number1.charAt(i) < number2.charAt(i)) {
                 return false;
             }
         }
@@ -238,27 +245,35 @@ public class TextDidital {
     }
 
     private static StringBuilder changeMantis(StringBuilder number, int degreeTen) {
+        if (degreeTen == 0) {
+            return number;
+        }
         int lengthFractionalParts = getLengthFractionalParts(number.toString());
-        number.deleteCharAt(number.indexOf("."));
-        int numberLength = number.length();
-        if (degreeTen >= 0) {
+        StringBuilder result = new StringBuilder(number);
+        if (result.indexOf(".") == -1) {
+            result.append(".");
+        }
+        result.deleteCharAt(result.indexOf("."));
+        int numberLength = result.length();
+        if (degreeTen > 0) {
             if (lengthFractionalParts > degreeTen) {
-                number.insert(numberLength - (lengthFractionalParts - degreeTen), '.');
+                result.insert(result.length() - lengthFractionalParts + degreeTen, '.');
             } else {
                 for (int i = 0; i < degreeTen - lengthFractionalParts; i++) {
-                    number.append('0');
+                    result.append('0');
                 }
             }
         } else {
             if (numberLength - lengthFractionalParts > -degreeTen) {
-                number.insert(numberLength - (lengthFractionalParts - degreeTen), '.');
+                result.insert(numberLength - (lengthFractionalParts - degreeTen), '.');
             } else {
                 for (int i = 0; i < -degreeTen - (numberLength - lengthFractionalParts); i++) {
-                    number.insert(0, '0');
+                    result.insert(0, '0');
                 }
-                number.insert(0, "0.");
+                result.insert(0, "0.");
             }
         }
-        return number;
+        pruningZero(result);
+        return result;
     }
 }
