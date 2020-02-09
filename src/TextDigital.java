@@ -3,15 +3,48 @@ public class TextDigital {
 
         String number1 = "6510715279465198716163165161684651465161654.654168461651699847985126710761527";
         String number2 = "654168461651699847985126710761527.6510715279465198716163165161684651465161654";
-//        String number1 = "10.01";
-//        String number2 = "0.1";
+//        String number1 = "0.01";
+//        String number2 = "10";
         //System.out.println(additionTextDidital(number1, number2));
         //System.out.println(subtractionTextDidital(number1, number2));
         //System.out.println(multiplicationTextDidital(number1, number2));
-        System.out.println(divisionTextDidital(number1, number2));
-        //System.out.println(changeMantis(new StringBuilder(number1), 1));
-        //pruningZero(new StringBuilder("00"));
+        //System.out.println(divisionTextDidital(number1, number2));
+        System.out.println(sqrtTextDidital(number1));
+    }
 
+    public static String sqrtTextDidital(String operand1) {
+        StringBuilder divergence = new StringBuilder("1");
+        StringBuilder deviation = new StringBuilder("0.");
+        StringBuilder minInterval = new StringBuilder("1");
+        StringBuilder maxInterval = new StringBuilder(operand1);
+        StringBuilder halfInterval = new StringBuilder("1");
+
+        boolean operandLessThanOne = !firstOperandMore(maxInterval, divergence);
+
+        if (operandLessThanOne) {
+            maxInterval = new StringBuilder(divisionTextDidital("1", operand1));
+            operand1 = new String(maxInterval.toString());
+        }
+
+        for (int i = 0; i < 20; i++) {
+            deviation.append("0");
+        }
+        deviation.append("1");
+
+        while (firstOperandMore(divergence, deviation) && !divergence.toString().equals("0")) {
+            halfInterval = new StringBuilder(divisionTextDidital(additionTextDidital(minInterval.toString(), maxInterval.toString()), "2"));
+            divergence = new StringBuilder(subtractionTextDidital(operand1, multiplicationTextDidital(halfInterval.toString(), halfInterval.toString())));
+            if (divergence.charAt(0) == '-') {
+                maxInterval = new StringBuilder(halfInterval);
+                divergence.deleteCharAt(0);
+            } else {
+                minInterval = new StringBuilder(halfInterval);
+            }
+        }
+        if (operandLessThanOne) {
+            halfInterval = new StringBuilder(divisionTextDidital("1", halfInterval.toString()));
+        }
+        return halfInterval.toString();
     }
 
     public static String divisionTextDidital(String operand1, String operand2) {
@@ -28,7 +61,7 @@ public class TextDigital {
         }
 
 
-        while (result.length() - resultAddMantis - 1 < 1000 || result.toString().equals("0")) {
+        while (result.length() - resultAddMantis - 1 < 1000 && !number1.toString().equals("0")) {
             resultChar = 0;
             while (firstOperandMore(number1, number2)) {
                 number1 = new StringBuilder(subtractionTextDidital(number1.toString(), number2.toString()));
@@ -36,6 +69,9 @@ public class TextDigital {
             }
             result.append(resultChar);
             number1 = new StringBuilder(changeMantis(number1, 1));
+        }
+        for (int i = 0; i <= resultAddMantis - result.length() + 1; i++) {
+            result.append("0");
         }
         result.insert(resultAddMantis + 1, '.');
         pruningZero(result);
