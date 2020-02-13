@@ -9,8 +9,24 @@ public class TextDigital {
         //System.out.println(subtractionTextDidital(number1, number2));
         //System.out.println(multiplicationTextDidital(number1, number2));
         //System.out.println(divisionTextDidital(number1, number2));
-        System.out.println(sqrtTextDidital(number1));
+        //System.out.println(sqrtTextDidital(number1));
+        System.out.println(powTextDidital("0.5",-2));
     }
+
+    public static String powTextDidital(String operand, int power) {
+        StringBuilder result = new StringBuilder("1");
+
+        if (power < 0) {
+            power = -power;
+            operand = new String(divisionTextDidital("1", operand));
+        }
+        for (int i = 0; i < power; i++) {
+            result = new StringBuilder(multiplicationTextDidital(result.toString(), operand));
+        }
+        return result.toString();
+    }
+
+    ;
 
     public static String sqrtTextDidital(String operand1) {
         StringBuilder divergence = new StringBuilder("1");
